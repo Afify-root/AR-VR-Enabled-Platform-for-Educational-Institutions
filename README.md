@@ -17,6 +17,7 @@ As a practical example, our team is currently conducting a case study at the Fac
 The solution is designed to be adaptable to other environments and institutions, making it a comprehensive solution that can be customized to meet the needs of various institutions. The system is based on an interactive user interface designed to be user-friendly, even for those with no advanced technical experience. It also includes advanced features such as location sharing and live chat, providing a comprehensive and interactive educational experience.
 
 lidar sensor in iphone 14 pro - we take 5 shots of 3D scanning of Departmer's build. 
+and we improve the 3D scanning and integrate the all layers in one shot to export it to unity editor.
 Using ![WhatsApp Image 2025-02-05 at 10 10 31 AM (1)](https://github.com/user-attachments/assets/41cb5e22-3451-442c-9bcd-74e1003f7089)
 
 ![WhatsApp Image 2025-02-05 at 10 10 30 AM (2)](https://github.com/user-attachments/assets/54c5648e-b50e-4577-8737-fda1447f41a4)
@@ -30,5 +31,88 @@ Using ![WhatsApp Image 2025-02-05 at 10 10 31 AM (1)](https://github.com/user-at
 25-02-05 at 10 10 30 AM (3)](https://github.com/user-attachments/assets/5392aa84-fec3-4bf0-85e2-464d53328f0a)
 
 ![WhatsApp Image 2025-02-05 at 10 10 30 AM](https://github.com/user-attachments/assets/887f867f-d85c-401c-a456-d286b67a52a7)
+
+
+
+In Unity editor i started making navigation system with refrences point marker .. and started writing c# code files to run the navigation line - some of important tools which i use in unity for my AR app 
+1- AR foundation. 
+2- AR ratcasting.
+3- AI navigation.
+4- AR Kit for building ios app 
+5- plane detection.
+![image](https://github.com/user-attachments/assets/7b674e53-2465-41da-956f-317ca5fad05b)
+
+
+DestinationSelector code
+
+using UnityEngine;
+using UnityEngine.UI;
+
+public class DestinationSelector : MonoBehaviour
+{
+    public Transform[] destinations;
+    public NavigationController navigator; 
+
+    
+    public void SelectDestination(int index)
+    {
+        navigator.SetDestination(destinations[index]); 
+    }
+}
+
+UserLocationTracker code 
+
+using UnityEngine;
+using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
+using System.Collections.Generic;
+
+public class UserLocationTracker : MonoBehaviour
+{
+    public ARRaycastManager raycastManager;
+    public Transform userMarker;  
+    private List<ARRaycastHit> hits = new List<ARRaycastHit>();
+
+    void Update()
+    {
+        // Raycast 
+        Vector2 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
+        if (raycastManager.Raycast(screenCenter, hits, TrackableType.Planes))
+        {
+            Pose hitPose = hits[0].pose;
+            userMarker.position = hitPose.position;  
+        }
+    }
+}
+
+
+NavigationController code
+
+using UnityEngine;
+
+public class NavigationController : MonoBehaviour
+{
+    public Transform player; 
+    public LineRenderer lineRenderer; 
+
+ 
+    public void SetDestination(Transform target)
+    {
+        DrawPath(player.position, target.position); 
+    }
+
+   
+    private void DrawPath(Vector3 start, Vector3 end)
+    {
+        lineRenderer.positionCount = 2; 
+        lineRenderer.SetPosition(0, start); 
+        lineRenderer.SetPosition(1, end);   
+
+        lineRenderer.startWidth = 0.1f; 
+        lineRenderer.endWidth = 0.1f;   
+        lineRenderer.material.color = Color.green; 
+    }
+}
+
 
 
